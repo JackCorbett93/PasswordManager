@@ -27,7 +27,7 @@ class PostsController extends Controller
      */
     public function create()
     {
-        //
+        return view ('posts.create');
     }
 
     /**
@@ -38,7 +38,24 @@ class PostsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $uid = Auth::id();
+        $this->validate($request, [
+            'website' => 'required|active_url',
+            'email' => 'required|email',
+            'password' => ['required', 
+               'min:6', 
+               'regex:/^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\X])(?=.*[!$#%]).*$/'],
+
+        ]);
+        //create Post
+        $post = new Post;
+        $post->uid =  $uid;
+        $post->website = $request->input('website');
+        $post->email = $request->input('email');
+        $post->password = $request->input('password');
+        $post->save();
+
+        return redirect('/posts')->with('success', 'Login created');
     }
 
     /**
@@ -60,7 +77,8 @@ class PostsController extends Controller
      */
     public function edit($id)
     {
-        //
+        $post = Post::find($id);
+        return view('posts.edit')->with('post', $post);
     }
 
     /**
@@ -72,7 +90,25 @@ class PostsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $uid = Auth::id();
+        $this->validate($request, [
+            'website' => 'required|active_url',
+            'email' => 'required|email',
+            'password' => ['required', 
+               'min:6', 
+               'regex:/^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\X])(?=.*[!$#%]).*$/', 
+               'confirmed'],
+
+        ]);
+        //create Post
+        $post = Post::find($id);
+        $post->uid =  $uid;
+        $post->website = $request->input('website');
+        $post->email = $request->input('email');
+        $post->password = $request->input('password');
+        $post->save();
+
+        return redirect('/posts')->with('success', 'Login updated');
     }
 
     /**
@@ -83,6 +119,8 @@ class PostsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $post = POST::find($id);
+        $post->delete();
+        return redirect('/posts')->with('success', 'Login deleted');
     }
 }

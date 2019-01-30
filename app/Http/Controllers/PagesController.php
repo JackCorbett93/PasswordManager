@@ -10,11 +10,7 @@ class PagesController extends Controller
         $title = 'Index';
         return view('pages.home')->with('title', $title);
     }
-    public function pass(){
-        
-        $Id = Auth::id();
-        return view('pages.posts')->with('id', $Id);
-    }
+
     public function services(){
         $data = array(
             'title' => 'Services',

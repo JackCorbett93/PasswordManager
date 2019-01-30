@@ -17,7 +17,7 @@
                             <ul class="navbar-nav mr-auto">
                                 @auth    
                                 <ul class="navbar-nav">
-                                        <ul><a href="/PasswordManager">Passwords</a></ul>
+                                        <ul><a href="/posts">Passwords</a></ul>
                                         <ul><a href="/services">Services</a></ul>
                                 </ul>
                                 @endauth

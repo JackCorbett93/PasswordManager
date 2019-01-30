@@ -3,6 +3,7 @@
 <div class="row">
     <div class="col-lg-12">
         <h2> Viewing Passwords </h2>
+        <button type="button" class="btn btn-warning btn-s"><a href="/posts/create">Create Post</a></button>
         <div class="table-responsive">
             <table class="table">
                 <tr class="info">
@@ -16,8 +17,11 @@
                 <td>{{ $post -> website}}</td>
                 <td>{{ $post -> email }}</td>
                 <td>{{ $post -> password}}</td>
-                <td><button type="button" class="btn btn-success btn-s"><a href="updateUserForm.php?id='.$row['id'].'">Update</a></button>
-                   <button type="button" class="btn btn-danger btn-s"><a class="remove"  href="removeUser.php?id='.$row['id'].'">Remove</a></button>
+                <td><button type="button" class="btn btn-success btn-s"><a href="/posts/{{$post->id}}/edit">Update</a></button>
+                   {!!Form::open(['action' => ['PostsController@destroy', $post->id], 'method' => 'POST'])!!}
+                   {{Form::hidden('_method', 'DELETE')}}
+                   {{Form::submit('Delete', ['class' => 'btn btn-danger'])}}
+                   {!!Form::close()!!}
                 </tr>
                 </tr>   
                 @endforeach
