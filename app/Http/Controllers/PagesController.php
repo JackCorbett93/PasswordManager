@@ -12,7 +12,7 @@ class PagesController extends Controller
     }
     public function pass(){
         
-        $Id = Auth::user()->getEmail();
+        $Id = Auth::id();
         return view('pages.posts')->with('id', $Id);
     }
     public function services(){

@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Auth;
 use App\Post;
 class PostsController extends Controller
+
 {
     /**
      * Display a listing of the resource.
@@ -13,8 +15,9 @@ class PostsController extends Controller
      */
     public function index()
     {
-        $posts = Post::get();
-        return view('posts.posts')->with(compact('posts'));
+        $uid = Auth::id();
+        $posts = Post::where('uid', $uid)->get();
+        return view('posts.index')->with('posts', $posts);
     }
 
     /**
