@@ -7,6 +7,7 @@ use Auth;
 use App\Post;
 class PostsController extends Controller
 
+
 {
     /**
      * Display a listing of the resource.
@@ -16,8 +17,9 @@ class PostsController extends Controller
     public function index()
     {
         $uid = Auth::id();
+        $pass = Auth::user()->password;
         $posts = Post::where('uid', $uid)->get();
-        return view('posts.index')->with('posts', $posts);
+        return view('posts.index')->with('posts', $posts)->with('passes', $pass);
     }
 
     /**
@@ -36,6 +38,7 @@ class PostsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+    
     public function store(Request $request)
     {
         $uid = Auth::id();
@@ -52,7 +55,19 @@ class PostsController extends Controller
         $post->uid =  $uid;
         $post->website = $request->input('website');
         $post->email = $request->input('email');
-        $post->password = $request->input('password');
+        $data = $request->input('password');
+        function encrypt($data){
+        $key = Auth::user()->password;
+        // Remove the base64 encoding from our key
+        $encryption_key = base64_decode($key);
+        // Generate an initialization vector
+        $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-cbc'));
+        // Encrypt the data using AES 256 encryption in CBC mode using our encryption key and initialization vector.
+        $encrypted = openssl_encrypt($data, 'aes-256-cbc', $encryption_key, 0, $iv);
+        // The $iv is just as important as the key for decrypting, so save it with our encrypted data using a unique separator (::)
+        return base64_encode($encrypted . '::' . $iv);
+        }
+        $post->password = encrypt($data);
         $post->save();
 
         return redirect('/posts')->with('success', 'Login created');
@@ -78,7 +93,8 @@ class PostsController extends Controller
     public function edit($id)
     {
         $post = Post::find($id);
-        return view('posts.edit')->with('post', $post);
+        $pass = Auth::user()->password;
+        return view('posts.edit')->with('post', $post)->with('passes', $pass);
     }
 
     /**
@@ -96,8 +112,7 @@ class PostsController extends Controller
             'email' => 'required|email',
             'password' => ['required', 
                'min:6', 
-               'regex:/^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\X])(?=.*[!$#%]).*$/', 
-               'confirmed'],
+               'regex:/^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\X])(?=.*[!$#%]).*$/'],
 
         ]);
         //create Post
@@ -105,7 +120,20 @@ class PostsController extends Controller
         $post->uid =  $uid;
         $post->website = $request->input('website');
         $post->email = $request->input('email');
-        $post->password = $request->input('password');
+        $data = $request->input('password');
+        function encrypt($data){
+            $key = Auth::user()->password;
+            // Remove the base64 encoding from our key
+            $encryption_key = base64_decode($key);
+            // Generate an initialization vector
+            $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-cbc'));
+            // Encrypt the data using AES 256 encryption in CBC mode using our encryption key and initialization vector.
+            $encrypted = openssl_encrypt($data, 'aes-256-cbc', $encryption_key, 0, $iv);
+            // The $iv is just as important as the key for decrypting, so save it with our encrypted data using a unique separator (::)
+            return base64_encode($encrypted . '::' . $iv);
+            }
+            $post->password = encrypt($data);
+        $request->input('password');
         $post->save();
 
         return redirect('/posts')->with('success', 'Login updated');
