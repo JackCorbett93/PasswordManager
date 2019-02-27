@@ -3,9 +3,22 @@
 <div class="row">
     <div class="col-lg-12">
         <h2> Viewing Passwords </h2>
+        <button type="button" class="btn btn-success btn-s"><a href="/save">save table</a></button>
         <button type="button" class="btn btn-warning btn-s"><a href="/posts/create">Create Post</a></button>
+        <div class="container">
+            <form action="/search" method="get" role="search">
+                {{ csrf_field() }}
+                <div class="input-group">
+                    <input type="search" class="form-control" name="search"
+                        placeholder="Search logins"> <span class="input-group-btn">
+                        <button type="submit" class="btn btn-default">
+                        </button>
+                    </span>
+                </div>
+            </form>
+        </div>
         <div class="table-responsive">
-            <table class="table">
+            <table class="table table-striped">
                 <tr class="info">
                     <th>Website</th>
                     <th>Email</th>
@@ -13,7 +26,8 @@
                     <th>Options</th>
                 </tr>
                 <?php 
-                $key = $passes;
+                
+               
                 function my_decrypt($data, $key) {
                 //$key = $passes;
                 // Remove the base64 encoding from our key
@@ -22,17 +36,20 @@
                 list($encrypted_data, $iv) = explode('::', base64_decode($data), 2);
                 return openssl_decrypt($encrypted_data, 'aes-256-cbc', $encryption_key, 0, $iv);
             } 
+        
                 ?>
-               @foreach ($posts as $post)
-              <?php
-               $de = $post -> password;
+                @foreach ($posts as $post)
                
-            $depass = my_decrypt($de, $key);
+              <?php
+              //echo cookie::get('curtpass');
+               $de = $post -> password;  
+               $key = $passes;
+               $depass = my_decrypt($de, $key);
             ?>
                 <tr>
-                <td>{{ $post -> website}}</a></td>
+                <td><a href="{{ $post -> website}}">{{$post -> website}}</a></td>
                 <td>{{ $post -> email }}</td>
-                <td>{{ $depass     }} {{$post -> password}}</td>
+                <td>{{ $depass }} {{-- {{$post -> password}} --}}</td>
                 <td><button type="button" class="btn btn-success btn-s"><a href="/posts/{{$post->id}}/edit">Update</a></button>
                    {!!Form::open(['action' => ['PostsController@destroy', $post->id], 'method' => 'POST'])!!}
                    {{Form::hidden('_method', 'DELETE')}}
