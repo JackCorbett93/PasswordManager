@@ -1,7 +1,6 @@
 <?php
-
 use Illuminate\Http\Request;
-
+use App\Post;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -13,6 +12,11 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware('auth:api')->get('/posts', function (Request $request) {
+    return $request->post();
+    //$id = 1;
+    //$posts = PostsController::show($id);
+    //return postResource::collection($posts);
 });
+// gets all logins
+Route::get('posts/{id}', 'PostsController@show');

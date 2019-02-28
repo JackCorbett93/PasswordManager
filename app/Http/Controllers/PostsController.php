@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 use App\Http\Controllers\XMLWriter;
+use App\Http\Resources\postResource as PostResource;
 use Auth;
 use App\Post;
 use Cookie;
@@ -102,7 +103,11 @@ class PostsController extends Controller
      */
     public function show($id)
     {
-        //
+                //$uid = Auth::id();
+                $posts = Post::where('uid', $id)->get();
+                //return view('posts.index')->with('posts', $posts);
+                //return $posts;
+                return PostResource::collection($posts);
     }
 
     /**
